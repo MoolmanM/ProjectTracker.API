@@ -2,6 +2,8 @@
 using Microsoft.Build.Construction;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Data;
+using TaskManager.Dtos.Projects;
+using TaskManager.Mappings;
 using TaskManager.Models;
 
 namespace TaskManager.Controllers
@@ -12,53 +14,55 @@ namespace TaskManager.Controllers
     {
         private readonly AppDbContext _context = context;
 
-        // GET: api/Projects
+        // GET: api/Projects - Return summary list for performance
         [HttpGet]
         public async Task<IActionResult> GetProjects()
         {
-            return Ok(await _context.Projects.ToListAsync());
+            var projects = await _context.Projects
+                .Select(p => p.ToSummaryDto())
+                .ToListAsync();
+
+            return Ok(projects);
         }
 
-        // GET: api/Projects/5
+        // GET: api/Projects/5 - Return full project details
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProject(int id)
         {
             var project = await _context.Projects.FindAsync(id);
             if (project == null) return NotFound();
 
-            return Ok(project);
+            return Ok(project.ToDto());
         }
 
-        // POST: api/Projects
+        // POST: api/Projects - Create from DTO
         [HttpPost]
-        public async Task<IActionResult> CreateProject(Project project)
+        public async Task<IActionResult> CreateProject(CreateProjectDto createDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var project = createDto.ToEntity();
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetProject), new { id = project.Id }, project);
+
+            return CreatedAtAction(
+                actionName: nameof(GetProject),
+                routeValues: new { id = project.Id },
+                value: project.ToDto());
         }
 
-        // PUT: api/Projects/5
+        // PUT: api/Projects/5 - Update with DTO
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProject(int id, Project project)
+        public async Task<IActionResult> UpdateProject(int id, UpdateProjectDto updateDto)
         {
-            if (id != project.Id) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            _context.Entry(project).State = EntityState.Modified;
+            var project = await _context.Projects.FindAsync(id);
+            if (project == null) return NotFound();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProjectExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                    throw;
-            }
+            project.UpdateWith(updateDto);
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
@@ -70,13 +74,9 @@ namespace TaskManager.Controllers
             if (project == null) return NotFound();
 
             _context.Projects.Remove(project);
+            await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool ProjectExists(int id)
-        {
-            return _context.Projects.Any(e => e.Id == id);
         }
     }
 }
