@@ -42,6 +42,8 @@ namespace TaskManager.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var project = createDto.ToEntity();
+            if (project == null) return BadRequest();
+
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
 
@@ -63,7 +65,7 @@ namespace TaskManager.Controllers
             project.UpdateWith(updateDto);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(project.ToSummaryDto());
         }
 
         // DELETE: api/Projects/5
