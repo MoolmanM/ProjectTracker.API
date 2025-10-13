@@ -1,6 +1,12 @@
 @TaskManager_HostAddress = http://localhost:5140
 
+# GET all projects (returns ProjectSummaryDTO)
 GET {{TaskManager_HostAddress}}/api/projects
+Accept: application/json
+
+###
+# Get specific project (returns full ProjectDTO)
+GET {{TaskManager_HostAddress}}/api/projects/1
 Accept: application/json
 
 ###
@@ -13,13 +19,111 @@ Content-Type: application/json
 }
 
 ###
-PUT {{TaskManager_HostAddress}}/api/projects/1
+PUT {{TaskManager_HostAddress}}/api/projects/3
+Content-Type: application/json
+
+{  
+  "name": "My Updated Project",
+  "description": "Updated description",
+}
+
+###
+DELETE {{TaskManager_HostAddress}}/api/projects/1
+Accept: application/json
+
+###
+GET {{TaskManager_HostAddress}}/api/tasks
+Accept: application/json
+
+###
+GET {{TaskManager_HostAddress}}/api/tasks/1
+Accept: application/json
+
+###
+POST {{TaskManager_HostAddress}}/api/tasks
+Content-Type: application/json 
+
+{
+  "title": "My New Task",
+  "description": "This is a description of my task",
+  "dueDate": "2026-02-15",
+  "projectId": 2
+}
+
+###
+PUT {{TaskManager_HostAddress}}/api/tasks/3
+Content-Type: application/json
+
+{  
+  "title": "My Updated Task",
+  "description": "Updated description",
+  "isCompleted": false,
+  "dueDate": "2026-03-01"
+}
+
+###
+DELETE {{TaskManager_HostAddress}}/api/tasks/3
+Accept: application/json
+
+### Integration Testing
+
+POST {{TaskManager_HostAddress}}/api/projects
 Content-Type: application/json
 
 {
-  "id": 1,  
-  "name": "My Updated Project",
-  "description": "Updated description",
-  "tasks": [],
-  "teamMembers": []
+  "name": "API Development Project",
+  "description": "Build RESTful APIs"
 }
+
+###
+@AboveProjectId = 6
+POST {{TaskManager_HostAddress}}/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Implement User Authentication",
+  "description": "SHA",
+  "dueDate": "2026-01-30",
+  "projectId": {{AboveProjectId}}
+}
+
+###
+
+PUT {{TaskManager_HostAddress}}/api/tasks/5
+Content-Type: application/json
+
+{
+  "title": "Implement User Authentication",
+  "description": "SHA",
+  "isCompleted": true,
+  "dueDate": "2026-01-30"
+}
+
+### Edge Cases
+# POST: Try to create task with invalid project ID
+POST {{TaskManager_HostAddress}}/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Invalid Project Task",
+  "description": "This should fail",
+  "dueDate": "2026-01-30",
+  "projectId": 999
+}
+
+###
+# PUT: Try to update non existent task
+PUT {{TaskManager_HostAddress}}/api/tasks/999
+Content-Type: application/json
+
+{
+  "title": "Invalid Project Task",
+  "description": "This should fail",
+  "isCompeted": false,
+  "dueDate": "2026-01-30"
+}
+
+###
+# GET: Try to get non existent project
+GET {{TaskManager_HostAddress}}/api/projects/999
+Accept: application/json
