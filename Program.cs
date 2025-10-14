@@ -4,6 +4,8 @@ using TaskManager.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// TODO: After adding login endpoint will have to configure JWT
+// TODO: Add Authorize attributes to controllers
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
