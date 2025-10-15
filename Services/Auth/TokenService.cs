@@ -6,14 +6,15 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using TaskManager.Models;
 
 namespace TaskManager.Services.Auth
 {
-    public class TokenService(JwtSettings jwtSettings) : ITokenService
+    public class TokenService(IOptions<JwtSettings> jwtSettings) : ITokenService
     {
-        private readonly JwtSettings _jwtSettings = jwtSettings;
+        private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
         public string GenerateAccessToken(ApplicationUser user)
         {

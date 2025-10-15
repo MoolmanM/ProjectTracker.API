@@ -52,16 +52,16 @@ namespace TaskManager.Controllers
             });
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);)
-                
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
             if (user == null) return Unauthorized("Invalid credentials");
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto, lockoutOnFailure: false);
-            if (result.Succeeded) return Unauthorized("Invalid credentials");
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, lockoutOnFailure: false);
+            if (!result.Succeeded) return Unauthorized("Invalid credentials");
 
             return Ok(new AuthResponseDto
             {
