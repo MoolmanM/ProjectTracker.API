@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Construction;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Data;
@@ -10,6 +11,7 @@ namespace TaskManager.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProjectsController(AppDbContext context) : ControllerBase
     {
         private readonly AppDbContext _context = context;

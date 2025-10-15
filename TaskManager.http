@@ -127,3 +127,36 @@ Content-Type: application/json
 # GET: Try to get non existent project
 GET {{TaskManager_HostAddress}}/api/projects/999
 Accept: application/json
+
+###
+# POST:
+POST {{TaskManager_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User", 
+  "email": "test@example.com",
+  "password": "TestPassword123!",
+  "confirmPassword": "TestPassword123!"
+}
+
+###
+# POST:
+POST {{TaskManager_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "TestPassword123!"
+}
+
+###
+# POST:
+POST {{TaskManager_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "wrong@example.com",
+  "password": "TestPassword123!"
+}

@@ -4,11 +4,13 @@ using TaskManager.Data;
 using TaskManager.Models;
 using TaskManager.Mappings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TaskManager.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TasksController(AppDbContext context) : ControllerBase
     {
         private readonly AppDbContext _context = context;

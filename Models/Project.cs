@@ -17,6 +17,7 @@ namespace TaskManager.Models
         public string Name { get; set; } = default!;
         public string? Description { get; set; }
         public ICollection<Models.Task> Tasks { get; set; } = [];
-        public ICollection<User> TeamMembers { get; set; } = [];
+        // TODO: Members should have different permissions based on their roles.
+        public ICollection<ApplicationUser> TeamMembers { get; set; } = [];
     }
 }
