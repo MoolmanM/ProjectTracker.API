@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using TaskManager.Dtos.Auth;
 using TaskManager.Models;
 using TaskManager.Services;
-using TaskManager.Services.Auth;
 
 namespace TaskManager.Controllers
 {
@@ -27,6 +21,9 @@ namespace TaskManager.Controllers
         public async Task<IActionResult> Register(RegisterDto registerDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            if (registerDto.Password is null)
+                return BadRequest("Password is required");
 
             if (registerDto.Password != registerDto.ConfirmPassword)
                 return BadRequest("Passwords do not match");
@@ -60,7 +57,7 @@ namespace TaskManager.Controllers
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
             if (user == null) return Unauthorized("Invalid credentials");
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, lockoutOnFailure: false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password!, lockoutOnFailure: false);
             if (!result.Succeeded) return Unauthorized("Invalid credentials");
 
             return Ok(new AuthResponseDto
