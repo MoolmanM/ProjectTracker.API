@@ -34,7 +34,7 @@ namespace TaskManager.Services.Auth
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryinMinutes),
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryInMinutes),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
