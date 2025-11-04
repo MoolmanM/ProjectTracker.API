@@ -10,14 +10,14 @@ namespace TaskManager.Dtos.Auth
     {
         [Required]
         [EmailAddress]
-        public string Email { get; init; }
+        public string? Email { get; init; }
         [Required]
-        public string Password { get; init; }
+        public string? Password { get; init; }
         [Required]
-        public string ConfirmPassword { get; init; }
+        public string? ConfirmPassword { get; init; }
         [Required]
-        public string FirstName { get; init; }
+        public string? FirstName { get; init; }
         [Required]
-        public string LastName { get; init; }
+        public string? LastName { get; init; }
     }
 }
