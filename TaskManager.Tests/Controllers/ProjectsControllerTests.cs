@@ -36,7 +36,6 @@ namespace TaskManager.Tests.Controllers
 
             var response = await _client.GetAsync("api/projects");
             _output.WriteLine($"Response Status: {response.StatusCode}");
-            //response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
             _output.WriteLine($"Response content: {content}");
